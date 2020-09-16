@@ -1,0 +1,21 @@
+{
+    "name": "emanuelmt/simple-php",
+    "description": "Simple PHP framework for SimplesTI",
+    "authors": [
+        {
+            "name": "Emanuel Marques",
+            "email": "emanuelmtmarques@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SimplePHP\\": "src"
+        }
+    },
+    "require": {
+        "filp/whoops": "^2.7",
+        "vlucas/phpdotenv": "^4.1",
+        "coffeecode/router": "^1.0",
+        "thiagoalessio/tesseract_ocr": "^2.9"
+    }
+}
