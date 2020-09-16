@@ -2,7 +2,7 @@
 
 require_once './vendor/autoload.php';
 
-$application = new SimplePHP\Bootstrap(__DIR__);
+$application = new SimplePHP\Bootstrap(__DIR__ . '\test');
 
 //throw new SimplePHP\Exception\ReadException("teste de shootdown");
 
