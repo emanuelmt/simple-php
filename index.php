@@ -1,18 +1,32 @@
 <?php
 
-require_once './vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
-$application = new SimplePHP\Bootstrap(__DIR__ . '\test');
+//use Psr\Http\Message\ResponseInterface as Response;
+//use Psr\Http\Message\ServerRequestInterface as Request;
+//use Slim\Factory\AppFactory;
+//use Slim\Exception\NotFoundException;
 
-//throw new SimplePHP\Exception\ReadException("teste de shootdown");
+$app = new SimplePHP\Bootstrap(__DIR__);
 
+//$router = $app->router;
+//
+//$container = $router->getContainer();
+//$container['HomeController'] = function($c) {
+//    $view = $c->get("view"); // retrieve the 'view' from the container
+//    return new HomeController($view);
+//};
+//
+//$router->get('/', \Test\Controllers\HomeController::class .':home');
+//
+//$router->run();
 
+function test($string) {
+    return str_replace(":", "-", $string);
+}
 
-//começar implementação das rotas para analisar o comportamento dos erros e exceptions
-//utilizar a biblioteca da coofee code
-//tentar colocar um try por fora de toda a implementação das rotas
-//fazer as rotas em forma de arquivos para facilitar
-//criar o modelBase e o ControllerBase
-
-echo "pos ex";
-
+$nascimento = new SimplePHP\Types\Date("22:4:1999 00:00:01");
+$cpf = new SimplePHP\Types\CpfCnpj("14496236702");
+echo $cpf;
+echo $nascimento;
+SimplePHP\Exception\ErrorRegister::render();

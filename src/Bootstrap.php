@@ -5,10 +5,12 @@ namespace SimplePHP;
 class Bootstrap {
 
     private $appErrors = [];
+    public $router;
 
     public function __construct($path) {
         $this->startEnviroments($path);
         $this->startErrorHandler();
+        $this->startRouter();
     }
 
     private function startEnviroments($path = __DIR__) {
@@ -38,6 +40,11 @@ class Bootstrap {
 //                Exception\ErrorRegister::render();
 //            });
         }
+    }
+
+    private function startRouter() {
+        $this->router = \Slim\Factory\AppFactory::create();
+        $this->router->setBasePath(getenv('WEBROOT'));
     }
 
     public function getErrors() {

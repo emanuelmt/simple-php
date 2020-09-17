@@ -24,12 +24,14 @@ class ErrorRegister {
     }
 
     public static function getErrors() {
-        return $GLOBALS['Errors'];
+        return $GLOBALS['Errors'] ?? [];
     }
 
     public static function render() {
         if (self::getErrors()) {
-            var_dump(self::getErrors());
+            foreach (self::getErrors() as $error){
+                echo $error->getMessage();
+            }
             self::initialize();
         }
     }

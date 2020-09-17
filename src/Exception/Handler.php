@@ -1,12 +1,5 @@
 <?php
 
-/*
- * Código de propriedade da empresa SimplesTI.
- * É restrita qualquer alteração, cópia ou
- * utilização não autorizada do mesmo.
- * Todos os direitos reservados. SimplesTI - 2018
- */
-
 namespace SimplePHP\Exception;
 
 class Handler {
@@ -20,18 +13,19 @@ class Handler {
     }
 
     public function handleException(\Throwable $t) {
-        $this->adminNotify($t);
+//        $this->adminNotify($t);
+//        var_dump($t);
         if (!($t instanceof \SimplePHP\Exception\SimpleException)
         ) {
-            ErrorRegister::register(new Error((function_exists($t->getUserMessage()) ? $t->getUserMessage() : "Ocorreu um problema inesperado no sistema. Por favor tente novamente em instantes."), "SYSTEM", $t), true);
-        }else{
-            ErrorRegister::register(new Error($t->getUserMessage(), "SYSTEM", $t), true);
+            ErrorRegister::register(new Error((method_exists($t, 'getUserMessage') ? $t->getUserMessage() : "Ocorreu um problema inesperado no sistema. Por favor tente novamente em instantes."), "SYSTEM", $t->getCode(), $t), true);
+        } else {
+            ErrorRegister::register(new Error($t->getUserMessage(), "SYSTEM", $t->getCode(), $t), true);
         }
     }
 
     public function handleError($level, $message, $file = null, $line = null) {
         if ($level != E_USER_ERROR && $level != E_USER_WARNING && $level != E_USER_NOTICE) {
-            $this->adminNotify(new SimpleException($message, $level, null, $file, $line));
+//            $this->adminNotify(new SimpleException($message, $level, null, $file, $line));
             ErrorRegister::register(new Error("Ocorreu um problema inesperado no sistema. Por favor tente novamente em instantes.", "SYSTEM"), true);
         } else {
             ErrorRegister::register(new Error($message, $level));
