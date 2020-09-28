@@ -1,5 +1,7 @@
 {
-    "name": "SimplePHP",
+   "name": "emanuelmt/simple-php",
+    "type": "framework",
+    "license": "MIT",
     "description": "Simple PHP framework for SimplesTI",
     "authors": [
         {
