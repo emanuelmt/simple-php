@@ -14,7 +14,7 @@ class SimpleException extends \Exception {
     protected $userMessage;
 
     public function __construct(string $message = "", int $code = 0, \Throwable $previous = null, $file = null, $line = 0) {
-        parent::__construct($message, $code, $previous);
+        parent::__construct(($message ? $message : ($this->userMessage ?? "Ocorreu um problema inesperado no sistema. Por favor tente novamente em instantes.")), $code, $previous);
 
         if ($line)
             $this->line = $line;

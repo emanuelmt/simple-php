@@ -6,6 +6,7 @@ class SimpleObject {
 
     protected $userMessage;
     protected $error;
+    protected $valid;
 
     public function setError($code, $description) {
         $this->error = ["code" => $code, "description" => $description];
@@ -26,4 +27,9 @@ class SimpleObject {
     public function toString() {
         return strval($this);
     }
+
+    public function isValid() {
+        return $this->valid;
+    }
+
 }

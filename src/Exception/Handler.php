@@ -2,7 +2,21 @@
 
 namespace SimplePHP\Exception;
 
-class Handler {
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Slim\Handlers\ErrorHandler as ErrorHandler;
+
+class Handler extends ErrorHandler {
+
+    public $application;
+
+    public function __construct(&$application, $resolver = null, $factory = null) {
+        $this->application = $application;
+        if ($resolver || $factory) {
+            parent::__construct($resolver, $factory);
+        }
+    }
 
     public function handle(\Throwable $e) {
         if (\Whoops\Util\Misc::isAjaxRequest()) {
@@ -13,7 +27,9 @@ class Handler {
     }
 
     public function handleException(\Throwable $t) {
-//        $this->adminNotify($t);
+        if (getenv('ADMIN_NOTIFY')) {
+            $this->adminNotify($t);
+        }
 //        var_dump($t);
         if (!($t instanceof \SimplePHP\Exception\SimpleException)
         ) {
@@ -25,11 +41,55 @@ class Handler {
 
     public function handleError($level, $message, $file = null, $line = null) {
         if ($level != E_USER_ERROR && $level != E_USER_WARNING && $level != E_USER_NOTICE) {
-//            $this->adminNotify(new SimpleException($message, $level, null, $file, $line));
-            ErrorRegister::register(new Error("Ocorreu um problema inesperado no sistema. Por favor tente novamente em instantes.", "SYSTEM"), true);
+            if (getenv('ADMIN_NOTIFY')) {
+                $this->adminNotify(new SimpleException($message, $level, null, $file, $line));
+            }
+            ErrorRegister::register(new Error("Ocorreu um problema inesperado no sistema. Por favor tente novamente em instantes.", "Ooops!", "SYSTEM"), true);
         } else {
-            ErrorRegister::register(new Error($message, $level));
+            ErrorRegister::register(new Error($message, "Ahhh...", $level));
         }
+    }
+
+    public function handleRequestErrors(\Slim\Interfaces\CallableResolverInterface $callableResolver, \Psr\Http\Message\ResponseFactoryInterface $responseFactory) {
+        $this->callableResolver = $callableResolver;
+        $this->responseFactory = $responseFactory;
+        $this->logger = null;
+    }
+
+    public function __invoke(ServerRequestInterface $request, \Throwable $exception = null, bool $displayErrorDetails = false, bool $logErrors = false, bool $logErrorDetails = false): ResponseInterface {
+        if ($exception && getenv('ADMIN_NOTIFY')) {
+            $this->adminNotify($exception);
+        }
+        $this->displayErrorDetails = $displayErrorDetails;
+        $this->logErrors = $logErrors;
+        $this->logErrorDetails = $logErrorDetails;
+        $this->request = $request;
+        $this->exception = $exception;
+        $this->method = $request->getMethod();
+        $this->statusCode = $this->determineStatusCode();
+        if ($this->contentType === null) {
+            $this->contentType = $this->determineContentType($request);
+        }
+
+        return $this->respond($request);
+    }
+
+    protected function respond(ServerRequestInterface $request = null): ResponseInterface {
+        $response = $this->responseFactory->createResponse($this->statusCode);
+        if ($this->contentType !== null && array_key_exists($this->contentType, $this->errorRenderers)) {
+            $response = $response->withHeader('Content-type', $this->contentType);
+        } else {
+            $response = $response->withHeader('Content-type', $this->defaultErrorRendererContentType);
+        }
+
+        if ($this->exception instanceof HttpMethodNotAllowedException) {
+            $allowedMethods = implode(', ', $this->exception->getAllowedMethods());
+            $response = $response->withHeader('Allow', $allowedMethods);
+        }
+
+        $renderer = $this->determineRenderer();
+        $body = call_user_func($renderer, $this->exception, $this->displayErrorDetails);
+        return ErrorRenderer::renderErrors($request, $response, $body);
     }
 
     private function formatUserMessage(\Throwable $e) {

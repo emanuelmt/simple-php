@@ -26,7 +26,6 @@ class CpfCnpj extends \SimplePHP\SimpleObject {
      * @param string $valor - O CPF ou CNPJ
      */
     private $cpfCnpjString;
-    private $valid;
 
     function __construct($valor = null) {
         // Deixa apenas números no valor

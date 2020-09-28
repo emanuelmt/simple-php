@@ -13,7 +13,6 @@ class Date extends \SimplePHP\SimpleObject {
     private $hour;
     private $minute;
     private $second;
-    private $valid;
     private $withTime;
 
     public function __construct($dateString = '', $withTime = false) {
@@ -23,6 +22,8 @@ class Date extends \SimplePHP\SimpleObject {
     }
 
     public function parse($dateString) {
+        $this->error = null;
+        $this->dateString = $dateString;
         $regexSeparator = "([^0-9]{1})";
         $regexYear = "\d{4}";
         $regexMonth = "(([0-9]|(0)[0-9])|((1)[0-2]))";
@@ -53,10 +54,18 @@ class Date extends \SimplePHP\SimpleObject {
                     $this->valid = false;
                     $this->setError('invalid_date', "A data informada não é válida!");
                     return false;
+                } else {
+                    $this->valid = true;
+                    return true;
                 }
+            } else if ($this->hour !== null || $this->minute !== null || $this->second !== null) {
+                $this->valid = true;
+                return true;
+            } else {
+                $this->valid = false;
+                $this->setError('invalid_date', "A data informada não é válida!");
+                return false;
             }
-            $this->valid = true;
-            return true;
         } else {
             $this->setError('invalid_date', "A data informada não é válida!");
             $this->valid = false;
@@ -124,7 +133,7 @@ class Date extends \SimplePHP\SimpleObject {
         $date = new Date($dateString);
         return (new \DateTime($this->format('y-m-d h:i:s')) >= new \DateTime($date->format('y-m-d h:i:s')));
     }
-    
+
     public function equalsThen($dateString) {
         $date = new Date($dateString);
         return (new \DateTime($this->format('y-m-d h:i:s')) == new \DateTime($date->format('y-m-d h:i:s')));

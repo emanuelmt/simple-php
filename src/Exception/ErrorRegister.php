@@ -11,6 +11,10 @@ namespace SimplePHP\Exception;
 
 class ErrorRegister {
 
+    public function __construct($app) {
+        $this->app = $app;
+    }
+
     public static function initialize() {
         $GLOBALS['Errors'] = [];
     }
@@ -18,8 +22,7 @@ class ErrorRegister {
     public static function register(Error $error, $breakScript = false) {
         $GLOBALS['Errors'][] = $error;
         if ($breakScript) {
-            self::render();
-            exit();
+            return self::render($breakScript);
         }
     }
 
@@ -27,12 +30,24 @@ class ErrorRegister {
         return $GLOBALS['Errors'] ?? [];
     }
 
-    public static function render() {
-        if (self::getErrors()) {
-            foreach (self::getErrors() as $error){
-                echo $error->getMessage();
+    public static function render($breakScript = false) {
+        if (!getenv('DEBUG')) {
+            $serverRequestCreator = \Slim\Factory\ServerRequestCreatorFactory::create();
+            $request = $serverRequestCreator->createServerRequestFromGlobals();
+            $response = $GLOBALS['App']->errorsHandler->__invoke($request, null, $breakScript);
+
+            if ($breakScript) {
+                $responseEmitter = new \Slim\ResponseEmitter();
+                $responseEmitter->emit($response);
             }
-            self::initialize();
+            exit();
+        } else {
+            if ($GLOBALS['App']->errorsRegister) {
+                var_dump($GLOBALS['App']->errorsRegister->getErrors());
+                if ($breakScript) {
+                    exit();
+                }
+            }
         }
     }
 

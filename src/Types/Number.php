@@ -4,7 +4,7 @@ namespace SimplePHP\Types;
 
 use \SimplePHP\Exception\Error;
 
-class Money extends \SimplePHP\SimpleObject {
+class Number extends \SimplePHP\SimpleObject {
 
     private $number;
     private $negative = false;
@@ -12,7 +12,6 @@ class Money extends \SimplePHP\SimpleObject {
     private $decimalPart;
     private $decimalSeparator;
     private $thousandsSeparator;
-    private $currencyPrefix;
     protected $valid = false;
 
     public function __construct($number = 0, $decimalSeparator = '.') {
@@ -23,16 +22,17 @@ class Money extends \SimplePHP\SimpleObject {
         $this->error = null;
         $this->number = trim($number);
         $this->decimalSeparator = $decimalSeparator;
-        if (preg_match('/^(\-)?(\s)?([R]\$|\$)?(\s?)(\d{1,3}(\,\d{3})*|(\d+))(\.\d+)?$/i', $this->number) && $this->decimalSeparator == '.') {
+
+        if (preg_match('/^\-?(\d{1,3}(\,\d{3})*|(\d+))(\.\d+)?$/i', $this->number) && $this->decimalSeparator == '.') {
             $this->decimalSeparator = '.';
             $this->thousandsSeparator = ',';
             $this->valid = true;
-        } else if (preg_match('/^(\-)?(\s)?([R]\$|\$)?(\s?)(\d{1,3}(\.\d{3})*|(\d+))(\,\d+)?$/i', $this->number) && $this->decimalSeparator == ',') {
+        } else if (preg_match('/^\-?(\d{1,3}(\.\d{3})*|(\d+))(\,\d+)?$/i', $this->number) && $this->decimalSeparator == ',') {
             $this->decimalSeparator = ',';
             $this->thousandsSeparator = '.';
             $this->valid = true;
         } else {
-            $this->setError('invalid_number_format', "O valor informado não possui um formato válido!");
+            $this->setError('invalid_number_format', "O número informado não possui um formato válido!");
             $this->valid = false;
         }
         $this->negative = (isset($this->number[0]) && $this->number[0] == '-' ? true : false);
@@ -60,7 +60,7 @@ class Money extends \SimplePHP\SimpleObject {
         return $this;
     }
 
-    public function format($decimals = false, $decimalSeparator = '.', $thousandsSeparator = '', $currencyPrefix = 'R$ ', $round = 0) {
+    public function format($decimals = false, $decimalSeparator = '.', $thousandsSeparator = '', $round = 0) {
         if ($decimals === false) {
             $decimals = strlen($this->decimalPart);
         }
@@ -75,14 +75,14 @@ class Money extends \SimplePHP\SimpleObject {
         } else {
             $number = ($this->intPart . ($this->decimalPart ? '.' . $this->decimalPart : ''));
         }
-        return ($this->negative ? '-' : '') . $currencyPrefix . number_format($number, (int) $decimals, $decimalSeparator, $thousandsSeparator);
+        return ($this->negative ? '-' : '') . number_format($number, (int) $decimals, $decimalSeparator, $thousandsSeparator);
     }
 
     public function __toString() {
         if ((int) $this->decimalPart) {
-            return $this->format(strlen($this->decimalPart), '.', '', '');
+            return $this->format(strlen($this->decimalPart));
         } else {
-            return $this->format(false, '.', '', '');
+            return $this->format();
         }
     }
 
