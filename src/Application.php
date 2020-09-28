@@ -54,9 +54,13 @@ class Application {
         \Slim\Factory\AppFactory::setContainer($container);
 
         $container->set('view', function() {
-            return \Slim\Views\Twig::create($this->path . DIRECTORY_SEPARATOR . "templates", ['cache' => false]);
+            $twig = \Slim\Views\Twig::create($this->path . DIRECTORY_SEPARATOR . "templates", ['cache' => false]);
+            $twig->addFunction(
+                new \Twig\TwigFunction('getenv', function ($key) {
+                return getenv($key);
+            }));
+            return $twig;
         });
-
         $router = \Slim\Factory\AppFactory::create();
         $router->setBasePath(getenv('WEBROOT'));
         $this->router = $router;
