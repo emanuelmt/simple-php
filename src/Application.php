@@ -55,10 +55,11 @@ class Application {
 
         $container->set('view', function() {
             $twig = \Slim\Views\Twig::create($this->path . DIRECTORY_SEPARATOR . "templates", ['cache' => false]);
-            $twig->addFunction(
-                new \Twig\TwigFunction('getenv', function ($key) {
+            $environment = $twig->getEnvironment();
+            $environment->addFunction(new \Twig\TwigFunction('getenv', function ($key) {
                 return getenv($key);
             }));
+            
             return $twig;
         });
         $router = \Slim\Factory\AppFactory::create();
