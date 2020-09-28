@@ -4,7 +4,7 @@ namespace SimplePHP\Types;
 
 use \SimplePHP\Exception\Error;
 
-class Date extends \SimplePHP\SimpleObject {
+class Date extends \SimplePHP\Core\SimpleObject {
 
     private $dateString;
     private $year;

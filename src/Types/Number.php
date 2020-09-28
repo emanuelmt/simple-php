@@ -4,7 +4,7 @@ namespace SimplePHP\Types;
 
 use \SimplePHP\Exception\Error;
 
-class Number extends \SimplePHP\SimpleObject {
+class Number extends \SimplePHP\Core\SimpleObject {
 
     private $number;
     private $negative = false;

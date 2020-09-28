@@ -16,7 +16,7 @@ namespace SimplePHP\Types;
  * @access   public
  * @see      http://www.todoespacoonline.com/w/
  */
-class CpfCnpj extends \SimplePHP\SimpleObject {
+class CpfCnpj extends \SimplePHP\Core\SimpleObject {
 
     /**
      * Configura o valor (Construtor)

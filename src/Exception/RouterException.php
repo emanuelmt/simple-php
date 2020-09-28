@@ -11,6 +11,6 @@ namespace SimplePHP\Exception;
 
 class RouterException extends SimpleException {
 
-    protected $userMessage = "Os argumentos do método \SimplePHP\Application::startRouter precisam ser implementações de \SimplePHP\SimpleRoute ou uma função.";
+    protected $userMessage = "Os argumentos do método \SimplePHP\Application::startRouter precisam ser implementações de \SimplePHP\Core\SimpleRoute ou uma função.";
 
 }

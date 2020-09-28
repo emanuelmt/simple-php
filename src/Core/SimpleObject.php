@@ -1,6 +1,6 @@
 <?php
 
-namespace SimplePHP;
+namespace SimplePHP\Core;
 
 class SimpleObject {
 
