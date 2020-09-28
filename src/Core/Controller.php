@@ -53,4 +53,8 @@ class Controller {
         return $this->errors;
     }
 
+    public function viewRender($response, $template, array $args = []) {
+       return $GLOBALS['App']->viewRender($response, $template, $args);
+    }
+
 }
