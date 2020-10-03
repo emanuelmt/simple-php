@@ -16,6 +16,7 @@ class Controller {
     public function __construct(ContainerInterface $container) {
         $this->view = $container->get("view");
         $this->view->getEnvironment()->addGlobal("app", (object) $GLOBALS['App']);
+        $this->container = $container;
     }
 
     protected function validate(array &$variables, array $paramsRules, bool $breakOnInvalid = true) {
