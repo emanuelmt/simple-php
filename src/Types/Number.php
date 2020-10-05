@@ -85,5 +85,9 @@ class Number extends \SimplePHP\Core\SimpleObject {
             return $this->format();
         }
     }
+    
+    public static function numbersOnly($string){
+        return preg_replace("/\D/", "", $string);
+    }
 
 }

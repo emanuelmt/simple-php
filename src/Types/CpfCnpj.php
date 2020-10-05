@@ -41,7 +41,7 @@ class CpfCnpj extends \SimplePHP\Core\SimpleObject {
      * @access protected
      * @return string CPF, CNPJ ou false
      */
-    protected function typeOf() {
+    public function typeOf() {
         // Verifica CPF
         if (strlen($this->cpfCnpjString) === 11) {
             return 'CPF';
