@@ -17,7 +17,7 @@ class Mail extends \SimplePHP\Core\SimpleObject {
     public function parse($mailString) {
         $this->error = null;
         $this->valid = true;
-        if (filter_var($mailString, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($mailString, FILTER_VALIDATE_EMAIL)) {
             $this->setError('invalid_mail', "O email informado não está em um formato válido!");
             $this->valid = false;
         }
