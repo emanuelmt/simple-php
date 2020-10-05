@@ -80,4 +80,12 @@ class GenericValidator {
         return (is_array($params) ? $this->variables[$variable] >= $params[0] : $this->variables[$variable] >= $params);
     }
 
+    protected function ruleLessThen(&$variable, $params) {
+        return (is_array($params) ? $this->variables[$variable] < $params[0] : $this->variables[$variable] < $params);
+    }
+
+    protected function ruleBiggerThen(&$variable, $params) {
+        return (is_array($params) ? $this->variables[$variable] > $params[0] : $this->variables[$variable] > $params);
+    }
+
 }
