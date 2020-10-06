@@ -2,7 +2,7 @@
 
 namespace SimplePHP\Validators;
 
-class MailValidator extends GenericValidator {
+class PhoneValidator extends GenericValidator {
 
     protected $type = "\SimplePHP\Types\Phone";
 
