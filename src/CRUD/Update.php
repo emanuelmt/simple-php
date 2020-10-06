@@ -7,7 +7,7 @@
  * @copyright (c) 2017, Emanuel Marques CREATIVE DESIGN PROJECTS
  */
 
-namespace App\Conn;
+namespace SimplePHP\CRUD;
 
 class Update extends Conn {
 

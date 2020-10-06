@@ -60,7 +60,7 @@ class Money extends \SimplePHP\Core\SimpleObject {
         return $this;
     }
 
-    public function format($decimals = false, $decimalSeparator = '.', $thousandsSeparator = '', $currencyPrefix = 'R$ ', $round = 0) {
+    public function format($decimals = 2, $decimalSeparator = '.', $thousandsSeparator = '', $currencyPrefix = 'R$ ', $round = 0) {
         if ($decimals === false) {
             $decimals = strlen($this->decimalPart);
         }
@@ -82,8 +82,15 @@ class Money extends \SimplePHP\Core\SimpleObject {
         if ((int) $this->decimalPart) {
             return $this->format(strlen($this->decimalPart), '.', '', '');
         } else {
-            return $this->format(false, '.', '', '');
+            return $this->format(2, '.', '', '');
         }
     }
 
+    public function toFloat($decimals = 2, $round = 0) {
+        return intval($this->format($decimals, '.', '', '', $round));
+    }
+
+    public function toInt($round = 0) {
+        return intval($this->format(false, '.', '', '', $round));
+    }
 }

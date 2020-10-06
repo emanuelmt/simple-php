@@ -9,11 +9,12 @@ class GenericValidator {
     protected $type;
     protected $errors = [];
 
-    public function __construct($variables, $ruleVariable, $rules, $invalidMessage = null) {
+    public function __construct(&$variables, $ruleVariable, $rules, $invalidMessage = null) {
         $this->variables = $variables;
 
         if ($this->type && isset($this->variables[$ruleVariable])){
             $this->variable = new $this->type($variables[$ruleVariable]);
+            $variables[$ruleVariable] = $this->variable;
             if (!$this->variable->isValid()) {
                 $this->errors[] = ($invalidMessage ? $invalidMessage : $this->variable->getError()['description']);
                 return;

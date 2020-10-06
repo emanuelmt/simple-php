@@ -45,4 +45,8 @@ class Integer extends \SimplePHP\Core\SimpleObject {
         return $this->format();
     }
 
+    public function toInt() {
+        return intval($this->__toString());
+    }
+
 }

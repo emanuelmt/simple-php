@@ -65,6 +65,7 @@ class Application {
         $router = \Slim\Factory\AppFactory::create();
         $router->setBasePath(getenv('WEBROOT'));
         $this->router = $router;
+        $router->addBodyParsingMiddleware();
         if (getenv("DEBUG")) {
             $router->add(new \Zeuxisoo\Whoops\Slim\WhoopsMiddleware(['enable' => true]));
         } else {

@@ -86,6 +86,14 @@ class Number extends \SimplePHP\Core\SimpleObject {
         }
     }
     
+    public function toFloat($decimals = 2, $round = 0) {
+        return floatval($this->format($decimals, '.', '', $round));
+    }
+
+    public function toInt($round = 0) {
+        return intval($this->format(false, '.', '', $round));
+    }
+    
     public static function numbersOnly($string){
         return preg_replace("/\D/", "", $string);
     }
