@@ -1,7 +1,7 @@
-HOME = 'https://localhost/projetos_web/SimplePHP'
+SYSHOME = 'https://localhost/projetos_web/SimplePHP'
 SITE = ''
 FULLPATH = 'D:/WebDev/projetos_web/SimplePHP'
-WEBROOT = "/projetos_web/SimplePHP/"
+SYSROOT = "/projetos_web/SimplePHP/"
 
 SYSNAME = "SimplePHP"
 SYSVERSION = "v0.1"

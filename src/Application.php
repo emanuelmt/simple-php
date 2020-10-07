@@ -63,7 +63,7 @@ class Application {
             return $twig;
         });
         $router = \Slim\Factory\AppFactory::create();
-        $router->setBasePath(getenv('WEBROOT'));
+        $router->setBasePath(getenv('SYSROOT'));
         $this->router = $router;
         $router->addBodyParsingMiddleware();
         if (getenv("DEBUG")) {
