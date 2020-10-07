@@ -11,11 +11,11 @@ ATUALIZANDO = 0
 TELEGRAM_BOT_KEY = ""
 TELEGRAM_BOT_CHANNEL = ""
 
-HOST = 'localhost'
-DRIVER = 'mysql'
-USER = 'root'
-PASS = ''
-DBSA = 'fastlista'
+DBHOST = 'localhost'
+DBDRIVER = 'mysql'
+DBUSER = 'root'
+DBPASS = ''
+DBNAME = 'dbname'
 
 MAIL_PORT = 587
 MAIL_HOST = ''

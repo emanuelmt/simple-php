@@ -50,11 +50,11 @@ class Conn {
 
     /** Retorna um objeto PDO Singleton Pattern. */
     public static function getConn($trasaction = false) {
-        self::$Host = getenv("HOST");
-        self::$Driver = getenv("DRIVER");
-        self::$User = getenv("USER");
-        self::$Pass = getenv("PASS");
-        self::$Dbsa = getenv("DBSA");
+        self::$Host = getenv("DBHOST");
+        self::$Driver = getenv("DBDRIVER");
+        self::$User = getenv("DBUSER");
+        self::$Pass = getenv("DBPASS");
+        self::$Dbsa = getenv("DBNAME");
         $conn = self::Conectar();
         if ($trasaction) {
             $conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, 0);
