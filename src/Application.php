@@ -80,6 +80,7 @@ class Application {
             $errorHandler = $errorMiddleware->getDefaultErrorHandler();
             $errorHandler->registerErrorRenderer('text/html', Exception\ErrorRenderer::class);
             $errorHandler->registerErrorRenderer('application/json', Exception\ErrorRenderer::class);
+            $errorHandler->setDefaultErrorRenderer('application/json', Exception\ErrorRenderer::class);
         }
 
         $router->add(\Slim\Views\TwigMiddleware::createFromContainer($router));

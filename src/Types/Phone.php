@@ -22,7 +22,7 @@ class Phone extends \SimplePHP\Core\SimpleObject {
     public function parse($phoneString) {
         $this->error = null;
         $this->phoneString = $phoneString;
-        $regex = '/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/';
+        $regex = '/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?((?:(?:(9\d|[2-9])\d{3})\-?(\d{4}))|(?:((9\d|[2-9])\d{2})\-?(\d{5})))$/';
         if (preg_match($regex, $this->phoneString, $explode) != false) {
             $this->ddi = $explode[1];
             $this->ddd = $explode[2];
