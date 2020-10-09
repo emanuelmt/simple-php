@@ -12,15 +12,17 @@ class GenericValidator {
     public function __construct(&$variables, $ruleVariable, $rules, $invalidMessage = null) {
         $this->variables = $variables;
 
-        if ($this->type && isset($this->variables[$ruleVariable])){
+        if ($this->type && isset($this->variables[$ruleVariable])) {
             $this->variable = new $this->type($variables[$ruleVariable]);
             $variables[$ruleVariable] = $this->variable;
             if (!$this->variable->isValid()) {
-                $this->errors[] = ($invalidMessage ? $invalidMessage : $this->variable->getError()['description']);
+                $variableError = $this->variable->getError();
+
+                $this->errors[] = ($invalidMessage ? ($invalidMessage . ($variableError['description'] ? " # Motivo: " . $variableError['description'] : "")) : $variableError['description']);
                 return;
             }
         }
-        
+
         if (isset($rules['required']) && !$this->ruleRequired($ruleVariable)) {
             $this->errors[$ruleVariable][] = $rules['required'];
         } else if ($this->ruleRequired($ruleVariable)) {
@@ -49,10 +51,10 @@ class GenericValidator {
         }
     }
 
-    private function getInvalidMessage(){
+    private function getInvalidMessage() {
         
     }
-    
+
     public function getErrors() {
         return $this->errors;
     }

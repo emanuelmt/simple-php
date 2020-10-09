@@ -86,6 +86,9 @@ class Handler extends ErrorHandler {
             $allowedMethods = implode(', ', $this->exception->getAllowedMethods());
             $response = $response->withHeader('Allow', $allowedMethods);
         }
+        if (!$this->exception){
+            $response = $response->withStatus(400);            
+        }
 
         $renderer = $this->determineRenderer();
         $body = call_user_func($renderer, $this->exception, $this->displayErrorDetails);

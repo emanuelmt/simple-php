@@ -22,12 +22,12 @@ class Phone extends \SimplePHP\Core\SimpleObject {
     public function parse($phoneString) {
         $this->error = null;
         $this->phoneString = $phoneString;
-        $regex = '/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?((?:(?:(9\d|[2-9])\d{3})\-?(\d{4}))|(?:((9\d|[2-9])\d{2})\-?(\d{5})))$/';
+        $regex = '/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:(?:((?:9\d{4}|[2-9]\d{3}))\-?(\d{4}))|(?:((?:9\d{3}))\-?(\d{5})))$/';
         if (preg_match($regex, $this->phoneString, $explode) != false) {
             $this->ddi = $explode[1];
             $this->ddd = $explode[2];
-            $this->firstPart = $explode[3];
-            $this->secondPart = $explode[4];
+            $this->firstPart = ($explode[3] ? $explode[3] : $explode[5]);
+            $this->secondPart = ($explode[4] ? $explode[4] : $explode[6]);
         } else if ($phoneString) {
             $this->setError('invalid_phone_format', "O telefone informado não está em um formato válido!");
         }
@@ -61,7 +61,6 @@ class Phone extends \SimplePHP\Core\SimpleObject {
                 return true;
             }
         } else {
-            $this->setError('invalid_phone', "O telefone informado não é válido!");
             $this->valid = false;
             return false;
         }
@@ -83,11 +82,11 @@ class Phone extends \SimplePHP\Core\SimpleObject {
             );
     }
 
-    private function hasDDI() {
+    public function hasDDI() {
         return $this->ddi;
     }
 
-    private function hasDDD() {
+    public function hasDDD() {
         return $this->ddd;
     }
 
