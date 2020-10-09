@@ -87,7 +87,7 @@ class Money extends \SimplePHP\Core\SimpleObject {
     }
 
     public function toFloat($decimals = 2, $round = 0) {
-        return floatval($this->format($decimals, '.', '', '', $round));
+        return ($this->format($decimals, '.', '', '', $round));
     }
 
     public function toInt($round = 0) {
