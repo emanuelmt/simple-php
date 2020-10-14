@@ -5,7 +5,7 @@ namespace SimplePHP\Middleware;
 use \Slim\Psr7\Response;
 
 class ShowErrorsMiddleware {
-    
+
     /**
      * Example middleware invokable class
      *
@@ -16,22 +16,23 @@ class ShowErrorsMiddleware {
      */
     public function __invoke(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Server\RequestHandlerInterface $handler): \Psr\Http\Message\ResponseInterface {
         $response = $handler->handle($request);
-        $errorRenderer = new \SimplePHP\Exception\ErrorRenderer();
         $responseBody = $response->getBody();
-        return $response;
-        var_dump($responseBody); exit();
-//        $responseBody = json_decode($response->getBody());
-        $errors = json_decode($errorRenderer());
-        if ($errors->errors) {
-            if ($responseBody) {
-                $responseBody->errors = $errors->errors;
-            } else {
-                $responseBody = json_encode($errors);
+
+        $jsonBody = json_decode($responseBody);
+        if (json_last_error() == JSON_ERROR_NONE) {
+            $errorRenderer = new \SimplePHP\Exception\ErrorRenderer();
+            $errors = json_decode($errorRenderer());
+            if (isset($jsonBody->errors) && $errors->errors){
+                foreach ($errors->errors as $erro){
+                    $jsonBody->errors[] = $erro;
+                }
+            }else if ($errors->errors){
+                $jsonBody->errors = $errors->errors;
             }
+            $finalResponse = $errorRenderer->renderErrors(new \GuzzleHttp\Psr7\Response(), json_encode($jsonBody));
+            return $finalResponse;
         }
-        $finalResponse = new Response();
-        $finalResponse->getBody()->write(json_encode($responseBody));
-        return $finalResponse->withHeader('Content-Type', "application/json");
+        return $response;
     }
 
 }

@@ -92,7 +92,7 @@ class Handler extends ErrorHandler {
 
         $renderer = $this->determineRenderer();
         $body = call_user_func($renderer, $this->exception, $this->displayErrorDetails);
-        return ErrorRenderer::renderErrors($request, $response, $body);
+        return ErrorRenderer::renderErrors($response, $body);
     }
 
     private function formatUserMessage(\Throwable $e) {

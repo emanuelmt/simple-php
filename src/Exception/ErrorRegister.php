@@ -19,10 +19,10 @@ class ErrorRegister {
         $GLOBALS['Errors'] = [];
     }
 
-    public static function register(Error $error, $breakScript = false) {
+    public static function register(Error $error, $breakScript = false, $response = null) {
         $GLOBALS['Errors'][] = $error;
-        if ($breakScript) {
-            return self::render($breakScript);
+        if ($breakScript && $response) {
+            return self::render($breakScript, $response);
         }
     }
 
@@ -30,17 +30,37 @@ class ErrorRegister {
         return $GLOBALS['Errors'] ?? [];
     }
 
-    public static function render($breakScript = false) {
+    public static function render($response = null, $breakScript = false) {
         if (!getenv('DEBUG')) {
-            $serverRequestCreator = \Slim\Factory\ServerRequestCreatorFactory::create();
-            $request = $serverRequestCreator->createServerRequestFromGlobals();
-            $response = $GLOBALS['App']->errorsHandler->__invoke($request, null, $breakScript);
 
-            if ($breakScript) {
-                $responseEmitter = new \Slim\ResponseEmitter();
-                $responseEmitter->emit($response);
+            if ($response) {
+                $responseBody = $response->getBody();
+
+                if ("$responseBody" == '') {
+                    $jsonBody = new \stdClass();
+                } else {
+                    $jsonBody = json_decode($responseBody);
+                }
+                if (json_last_error() == JSON_ERROR_NONE) {
+                    $errorRenderer = new \SimplePHP\Exception\ErrorRenderer();
+                    $errors = json_decode($errorRenderer());
+                    if (isset($jsonBody->errors) && $errors->errors) {
+                        foreach ($errors->errors as $erro) {
+                            $jsonBody->errors[] = $erro;
+                        }
+                    } else if ($errors->errors) {
+                        $jsonBody->errors = $errors->errors;
+                    }
+                    $response = $errorRenderer->renderErrors(new \GuzzleHttp\Psr7\Response(), json_encode($jsonBody));
+                }
+                if ($breakScript) {
+                    $responseEmitter = new \Slim\ResponseEmitter();
+                    $responseEmitter->emit($response);
+                    exit();
+                } else {
+                    return $response;
+                }
             }
-            exit();
         } else {
             if ($GLOBALS['App']->errorsRegister) {
                 var_dump($GLOBALS['App']->errorsRegister->getErrors());

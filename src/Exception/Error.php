@@ -67,19 +67,30 @@ class Error {
     }
 
     public static function errorMessage($message, $title = 'Ooops!', $code = null, $breakScript = true, $previus = null, $response = null) {
-        return ErrorRegister::register(new Error($message, $title, "ERROR", $code, $previus), $breakScript, $response);
+        $error = new Error($message, $title, "ERROR", $code, $previus);
+        \SimplePHP\Exception\ErrorRegister::register($error);
+        return $error;
     }
 
     public static function sucessMessage($message, $title = 'Iuuupi!', $code = null, $breakScript = false, $previus = null, $response = null) {
-        return ErrorRegister::register(new Error($message, $title, "SUCCESS", $code, $previus), $breakScript, $response);
+        $error = new Error($message, $title, "SUCCESS", $code, $previus);
+        \SimplePHP\Exception\ErrorRegister::register($error);
+        return $error;
     }
 
     public static function warningMessage($message, $title = 'Ahhh...', $code = null, $breakScript = false, $previus = null, $response = null) {
-        return ErrorRegister::register(new Error($message, $title, "WARNING", $code, $previus), $breakScript, $response);
+        $error = new Error($message, $title, "WARNING", $code, $previus);
+        \SimplePHP\Exception\ErrorRegister::register($error);
+        return $error;
     }
 
     public static function infoMessage($message, $title = '', $code = null, $breakScript = false, $previus = null, $response = null) {
-        return ErrorRegister::register(new Error($message, $title, "INFO", $code, $previus), $breakScript, $response);
+        $error = new Error($message, $title, "INFO", $code, $previus);
+        \SimplePHP\Exception\ErrorRegister::register($error);
+        return $error;
     }
 
+    public function render($response){
+        return \SimplePHP\Exception\ErrorRegister::render($response, true);
+    }
 }

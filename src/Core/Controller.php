@@ -45,7 +45,7 @@ class Controller {
                 \SimplePHP\Exception\Error::warningMessage($error);
             }
             if ($breakOnInvalid) {
-                \SimplePHP\Exception\ErrorRegister::render($breakOnInvalid);
+                return \SimplePHP\Exception\ErrorRegister::render($breakOnInvalid);
             }
         }
     }

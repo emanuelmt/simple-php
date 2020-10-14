@@ -58,7 +58,7 @@ final class ErrorRenderer implements ErrorRendererInterface {
         }
     }
 
-    public static function renderErrors(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, $body) {
+    public static function renderErrors(\Psr\Http\Message\ResponseInterface $response, $body) {
         $contentType = $GLOBALS['App']->getContentType();
         if ($contentType == "application/json") {
             $response->getBody()->write($body);
