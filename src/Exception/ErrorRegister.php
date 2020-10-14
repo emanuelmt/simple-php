@@ -35,6 +35,7 @@ class ErrorRegister {
 
             if ($response) {
                 $responseBody = $response->getBody();
+                $headers = $response->getHeaders();
 
                 if ("$responseBody" == '') {
                     $jsonBody = new \stdClass();
@@ -51,7 +52,12 @@ class ErrorRegister {
                     } else if ($errors->errors) {
                         $jsonBody->errors = $errors->errors;
                     }
-                    $response = $errorRenderer->renderErrors(new \GuzzleHttp\Psr7\Response(), json_encode($jsonBody));
+                    $finalResponse = new \GuzzleHttp\Psr7\Response();
+                    foreach ($headers as $header => $value){
+                        $finalResponse = $finalResponse->withHeader($header, implode(", ", $value));
+                    }
+                    
+                    $response = $errorRenderer->renderErrors($finalResponse, json_encode($jsonBody));
                 }
                 if ($breakScript) {
                     $responseEmitter = new \Slim\ResponseEmitter();

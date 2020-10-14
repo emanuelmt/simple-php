@@ -90,7 +90,7 @@ class Error {
         return $error;
     }
 
-    public function render($response){
-        return \SimplePHP\Exception\ErrorRegister::render($response, true);
+    public function render($response, $breakScript = false){
+        return \SimplePHP\Exception\ErrorRegister::render($response, $breakScript);
     }
 }
