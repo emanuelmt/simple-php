@@ -45,6 +45,9 @@ abstract class Model {
             foreach ($this->errors as $error) {
                 \SimplePHP\Exception\Error::warningMessage($error);
             }
+            return false;
+        } else {
+            return true;
         }
     }
 
