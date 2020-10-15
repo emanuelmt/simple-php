@@ -26,4 +26,11 @@ class SimpleException extends \Exception {
         return $this->userMessage;
     }
 
+    public function adminNotify() {
+        if (!getenv('DEBUG')) {
+            $GLOBALS['App']->errorsHandler->adminNotify($this);
+        }
+        return $this;
+    }
+
 }

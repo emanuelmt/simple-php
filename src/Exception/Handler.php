@@ -27,12 +27,11 @@ class Handler extends ErrorHandler {
     }
 
     public function handleException(\Throwable $t) {
-        if (getenv('ADMIN_NOTIFY')) {
+        if (getenv('ADMIN_NOTIFY') && !is_subclass_of($t, SimpleException::class) && !is_subclass_of($t, \Slim\Exception\HttpSpecializedException::class)) {
             $this->adminNotify($t);
         }
 //        var_dump($t);
-        if (!($t instanceof \SimplePHP\Exception\SimpleException)
-        ) {
+        if (!is_subclass_of($t, SimpleException::class)) {
             ErrorRegister::register(new Error((method_exists($t, 'getUserMessage') ? $t->getUserMessage() : "Ocorreu um problema inesperado no sistema. Por favor tente novamente em instantes."), "SYSTEM", $t->getCode(), $t), true);
         } else {
             ErrorRegister::register(new Error($t->getUserMessage(), "SYSTEM", $t->getCode(), $t), true);
@@ -57,7 +56,7 @@ class Handler extends ErrorHandler {
     }
 
     public function __invoke(ServerRequestInterface $request, \Throwable $exception = null, bool $displayErrorDetails = false, bool $logErrors = false, bool $logErrorDetails = false): ResponseInterface {
-        if ($exception && getenv('ADMIN_NOTIFY')) {
+        if ($exception && !is_subclass_of($exception, SimpleException::class) && !is_subclass_of($exception, \Slim\Exception\HttpSpecializedException::class) && getenv('ADMIN_NOTIFY')) {
             $this->adminNotify($exception);
         }
         $this->displayErrorDetails = $displayErrorDetails;
@@ -86,8 +85,8 @@ class Handler extends ErrorHandler {
             $allowedMethods = implode(', ', $this->exception->getAllowedMethods());
             $response = $response->withHeader('Allow', $allowedMethods);
         }
-        if (!$this->exception){
-            $response = $response->withStatus(400);            
+        if (!$this->exception) {
+            $response = $response->withStatus(400);
         }
 
         $renderer = $this->determineRenderer();
@@ -101,13 +100,18 @@ class Handler extends ErrorHandler {
         $traceMessage = "";
         if ($e->getTrace()) {
             $i = 0;
-            foreach (array_reverse($e->getTrace()) as $trace) {
-                $traceMessage .= "<br>   <b>#$i</b>";
-                $traceMessage .= "<br>   <b>Arquivo:</b> " . ($trace['file'] ?? '-');
-                $traceMessage .= "<br>   <b>Linha:</b> " . ($trace['line'] ?? '-');
-                $traceMessage .= "<br>   <b>Classe:</b> " . ($trace['class'] ?? '-');
-                $traceMessage .= "<br>   <b>Função:</b> " . ($trace['function'] ?? '-');
-                $traceMessage .= "<br>   <b>Argumentos:</b> " . json_encode(($trace['args'] ?? '-')) . "<br>";
+            foreach (($e->getTrace()) as $trace) {
+                if ($i <= 5) {
+                    $traceMessage .= "<br>   <b>#$i</b>";
+                    $traceMessage .= "<br>   <b>Arquivo:</b> " . ($trace['file'] ?? '-');
+                    $traceMessage .= "<br>   <b>Linha:</b> " . ($trace['line'] ?? '-');
+                    $traceMessage .= "<br>   <b>Classe:</b> " . ($trace['class'] ?? '-');
+                    $traceMessage .= "<br>   <b>Função:</b> " . ($trace['function'] ?? '-');
+                    $traceMessage .= "<br>   <b>Argumentos:</b> " . json_encode(($trace['args'] ?? '-')) . "<br>";
+                    $i++;
+                } else {
+                    break;
+                }
                 $i++;
             }
         }
@@ -121,13 +125,17 @@ class Handler extends ErrorHandler {
         $traceMessage = "";
         if ($e->getTrace()) {
             $i = 0;
-            foreach (array_reverse($e->getTrace()) as $trace) {
-                $traceMessage .= "<br>   <b>#$i</b>";
-                $traceMessage .= "<br>   <b>Arquivo:</b> " . ($trace['file'] ?? '-');
-                $traceMessage .= "<br>   <b>Linha:</b> " . ($trace['line'] ?? '-');
-                $traceMessage .= "<br>   <b>Classe:</b> " . ($trace['class'] ?? '-');
-                $traceMessage .= "<br>   <b>Função:</b> " . ($trace['function'] ?? '-');
-                $traceMessage .= "<br>   <b>Argumentos:</b> " . json_encode(($trace['args'] ?? '-')) . "<br>";
+            foreach (($e->getTrace()) as $trace) {
+                if ($i <= 5) {
+                    $traceMessage .= "<br>   <b>#$i</b>";
+                    $traceMessage .= "<br>   <b>Arquivo:</b> " . ($trace['file'] ?? '-');
+                    $traceMessage .= "<br>   <b>Linha:</b> " . ($trace['line'] ?? '-');
+                    $traceMessage .= "<br>   <b>Classe:</b> " . ($trace['class'] ?? '-');
+                    $traceMessage .= "<br>   <b>Função:</b> " . ($trace['function'] ?? '-');
+                    $traceMessage .= "<br>   <b>Argumentos:</b> " . json_encode(($trace['args'] ?? '-')) . "<br>";
+                } else {
+                    break;
+                }
                 $i++;
             }
         }
@@ -147,7 +155,7 @@ class Handler extends ErrorHandler {
         error_log(str_replace(["<br>", "</br>"], ["\n", "\n"], $msg_error) . "\n------------------------------------------\n", 3, 'logs/errorsLog.dat');
     }
 
-    private function adminNotify(\Throwable $e) {
+    public function adminNotify(\Throwable $e) {
         $msg_error = $this->formatAdminMessage($e);
         try {
             $this->adminTelegramNotify($msg_error);
