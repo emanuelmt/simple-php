@@ -19,7 +19,7 @@ class Controller {
         $this->container = $container;
     }
 
-    protected function validate(array &$variables, array $paramsRules, bool $breakOnInvalid = true) {
+    protected function validate(array &$variables, array $paramsRules) {
         $this->variables = $variables;
         foreach ($paramsRules as $field => $rules) {
             list($ruleVariable, $type) = array_pad(explode(":", $field), 2, 'string');
@@ -44,12 +44,12 @@ class Controller {
             foreach ($this->errors as $error) {
                 \SimplePHP\Exception\Error::warningMessage($error);
             }
-            if ($breakOnInvalid) {
-                return \SimplePHP\Exception\ErrorRegister::render($breakOnInvalid);
-            }
         }
     }
 
+    public function renderErrors($response){
+        return \SimplePHP\Exception\ErrorRegister::render($response);
+    }
     public function getError() {
         return $this->errors;
     }

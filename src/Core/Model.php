@@ -45,10 +45,11 @@ abstract class Model {
             foreach ($this->errors as $error) {
                 \SimplePHP\Exception\Error::warningMessage($error);
             }
-            if ($breakOnInvalid) {
-                \SimplePHP\Exception\ErrorRegister::render($breakOnInvalid);
-            }
         }
+    }
+
+    public function renderErrors($response) {
+        return \SimplePHP\Exception\ErrorRegister::render($response);
     }
 
     public function getError() {

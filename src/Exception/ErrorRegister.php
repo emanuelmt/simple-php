@@ -64,6 +64,7 @@ class ErrorRegister {
                     $responseEmitter->emit($response);
                     exit();
                 } else {
+                    self::initialize();
                     return $response;
                 }
             }
