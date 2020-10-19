@@ -87,6 +87,8 @@ class Handler extends ErrorHandler {
         }
         if (!$this->exception) {
             $response = $response->withStatus(400);
+        } else if ($this->exception instanceof \Slim\Exception\HttpException) {
+            $response = $response->withStatus($this->exception->getCode());
         }
 
         $renderer = $this->determineRenderer();

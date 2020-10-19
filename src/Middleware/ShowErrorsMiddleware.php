@@ -35,7 +35,7 @@ class ShowErrorsMiddleware {
                 $finalResponse = $finalResponse->withAddedHeader($header, implode(", ", $value));
             }
 
-            $response = $errorRenderer->renderErrors($finalResponse, json_encode($jsonBody));
+            $response = $errorRenderer->renderErrors($finalResponse, json_encode($jsonBody))->withStatus($response->getStatusCode());
         }
         return $response;
     }
