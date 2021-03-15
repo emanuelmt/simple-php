@@ -15,19 +15,21 @@ class Money extends \SimplePHP\Core\SimpleObject {
     private $currencyPrefix;
     protected $valid = false;
 
-    public function __construct($number = 0, $decimalSeparator = '.') {
+    public function __construct($number = 0, $decimalSeparator = null) {
         $this->parse($number, $decimalSeparator);
     }
 
-    public function parse($number, $decimalSeparator = '.') {
+    public function parse($number, $decimalSeparator = null) {
         $this->error = null;
         $this->number = trim($number);
         $this->decimalSeparator = $decimalSeparator;
-        if (preg_match('/^(\-)?(\s)?([R]\$|\$)?(\s?)(\d{1,3}(\,\d{3})*|(\d+))(\.\d+)?$/i', $this->number) && $this->decimalSeparator == '.') {
+//        if (preg_match('/^(\-)?(\s)?([R]\$|\$)?(\s?)(\d{1,3}(\,\d{3})*|(\d+))(\.\d+)?$/i', $this->number) && $this->decimalSeparator == '.') {
+        if (preg_match('/^(\-)?(\s)?([R]\$|\$)?(\s?)(\d{1,3}(\,\d{3})*|(\d+))(\.\d+)?$/i', $this->number) && ($decimalSeparator ? $decimalSeparator == '.' : true)) {
             $this->decimalSeparator = '.';
             $this->thousandsSeparator = ',';
             $this->valid = true;
-        } else if (preg_match('/^(\-)?(\s)?([R]\$|\$)?(\s?)(\d{1,3}(\.\d{3})*|(\d+))(\,\d+)?$/i', $this->number) && $this->decimalSeparator == ',') {
+//        } else if (preg_match('/^(\-)?(\s)?([R]\$|\$)?(\s?)(\d{1,3}(\.\d{3})*|(\d+))(\,\d+)?$/i', $this->number) && $this->decimalSeparator == ',') {
+        } else if (preg_match('/^(\-)?(\s)?([R]\$|\$)?(\s?)(\d{1,3}(\.\d{3})*|(\d+))(\,\d+)?$/i', $this->number) && ($decimalSeparator ? $decimalSeparator == ',' : true)) {
             $this->decimalSeparator = ',';
             $this->thousandsSeparator = '.';
             $this->valid = true;
