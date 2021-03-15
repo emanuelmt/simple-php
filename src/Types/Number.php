@@ -75,7 +75,7 @@ class Number extends \SimplePHP\Core\SimpleObject {
         } else {
             $number = ($this->intPart . ($this->decimalPart ? '.' . $this->decimalPart : ''));
         }
-        return ($this->negative ? '-' : '') . number_format($number, (int) $decimals, $decimalSeparator, $thousandsSeparator);
+        return ($this->negative ? '-' : '') . number_format(floatval($number), (int) $decimals, $decimalSeparator, $thousandsSeparator);
     }
 
     public function __toString() {
